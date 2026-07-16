@@ -185,7 +185,7 @@
 												"parameters": {
 													"container": "bronze",
 													"folder": {
-														"value": "@item.table",
+														"value": "@item().table",
 														"type": "Expression"
 													},
 													"file": {
@@ -225,7 +225,7 @@
 												{
 													"type": "Query",
 													"text": {
-														"value": "select max(@{item().cdc_col}) as cdc\nfrom \n@{item().schema}.@{item().table}",
+														"value": "select max(@{item().cdc_col}) as cdc from @{item().schema}.@{item().table}",
 														"type": "Expression"
 													}
 												}
@@ -290,7 +290,10 @@
 												"type": "DatasetReference",
 												"parameters": {
 													"container": "bronze",
-													"folder": "@{item().table}_cdc",
+													"folder": {
+														"value": "@concat(item().table, '_cdc')",
+														"type": "Expression"
+													},
 													"file": "empty.json"
 												}
 											}
@@ -302,7 +305,7 @@
 												"parameters": {
 													"container": "bronze",
 													"folder": {
-														"value": "@{item()}_cdc",
+														"value": "@concat(item().table, '_cdc')",
 														"type": "Expression"
 													},
 													"file": "cdc.json"
