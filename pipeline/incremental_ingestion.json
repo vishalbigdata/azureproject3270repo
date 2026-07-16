@@ -68,7 +68,10 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"container": "bronze",
-							"folder": "Users",
+							"folder": {
+								"value": "@pipeline().parameters.table",
+								"type": "Expression"
+							},
 							"file": {
 								"value": "@concat(pipeline().parameters.table,'_',variables('current'))",
 								"type": "Expression"
@@ -131,7 +134,7 @@
 				}
 			},
 			{
-				"name": "If Condition1",
+				"name": "If_incremental_data",
 				"type": "IfCondition",
 				"dependsOn": [
 					{
@@ -143,6 +146,48 @@
 				],
 				"userProperties": [],
 				"typeProperties": {
+					"expression": {
+						"value": "@greater(\n    activity('AzureSQLToLake').output.dataRead\n    ,0\n    )",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "delete_empty_parque_file",
+							"type": "Delete",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "parque_dynamic_dataset",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": "bronze",
+										"folder": {
+											"value": "@pipeline().parameters.table",
+											"type": "Expression"
+										},
+										"file": {
+											"value": "@concat(pipeline().parameters.table,'_',variables('current'))",
+											"type": "Expression"
+										}
+									}
+								},
+								"enableLogging": true,
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								}
+							}
+						}
+					],
 					"ifTrueActivities": [
 						{
 							"name": "max_cdc",
