@@ -1,0 +1,12 @@
+{
+	"name": "AzureSql_dataset",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_azuresql_to_adf",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": []
+	}
+}
